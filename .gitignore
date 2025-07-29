@@ -1,0 +1,20 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build results
+bin/
+obj/
+
+# EF Core Migrations backups
+*.dbmdl
+
+# Rider
+.idea/
+
+# Node
+node_modules/
+
+# Others
+*.log
