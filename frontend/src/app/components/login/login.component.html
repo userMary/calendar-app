@@ -1,0 +1,13 @@
+<button (click)="goHome()">Вернуться на главную</button>
+
+<h2>Вход</h2>
+<form (ngSubmit)="login()" #loginForm="ngForm">
+  <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required>
+  <input type="password" [(ngModel)]="password" name="password" placeholder="Пароль" required>
+  <button type="submit">Войти</button>
+</form>
+<div *ngIf="errorMessage" style="color:red; margin-top:10px;">
+  {{ errorMessage }}
+</div>
+
+<button (click)="goToRegister()">Регистрация</button>

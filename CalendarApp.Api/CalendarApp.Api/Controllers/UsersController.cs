@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using CalendarApp.Data;
 using CalendarApp.DTOs;
 using CalendarApp.Models;
@@ -21,11 +23,25 @@ namespace CalendarApp.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User user)
         {
+            // Проверка Email
+            if (!new EmailAddressAttribute().IsValid(user.Email))
+                return BadRequest(new { message = "Введите корректный email" });
+
+            // Проверка пароля (длина и состав)
+            var password = user.PasswordHash;
+            var regex = new Regex(@"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@?!_\-=+*/]).{8,}$");
+            if (!regex.IsMatch(password))
+                return BadRequest(new { message = "Пароль не соответствует требованиям" });
+
             // Проверяем, есть ли уже пользователь с таким email
-            if (await _context.Users.AnyAsync(u => u.Email == user.Email))
-            {
-                return BadRequest("Пользователь с таким email уже существует");
-            }
+            // Проверка, что пользователь уже существует
+            //if (await _context.Users.AnyAsync(u => u.Email == user.Email))
+            //{
+            //    return BadRequest("Пользователь с таким email уже существует");
+            //}
+            // Проверка, что пользователь уже существует
+            if (_context.Users.Any(u => u.Email == user.Email))
+                return BadRequest(new { message = "Пользователь с таким email уже существует" });
 
             // Пока пароль храним как есть (позже сделаем хэширование)
             _context.Users.Add(user);

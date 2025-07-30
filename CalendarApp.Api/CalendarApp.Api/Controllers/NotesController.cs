@@ -76,12 +76,26 @@ namespace CalendarApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            //var note = await _context.Notes.FindAsync(id);
+            //if (note == null) return NotFound("Заметка не найдена");
+
+            //_context.Notes.Remove(note);
+            //await _context.SaveChangesAsync();
+            //return Ok("Удалено");
+
             var note = await _context.Notes.FindAsync(id);
-            if (note == null) return NotFound("Заметка не найдена");
+            if (note == null)
+                return NotFound(new { message = "Заметка не найдена" });
 
             _context.Notes.Remove(note);
             await _context.SaveChangesAsync();
-            return Ok("Удалено");
+
+            // Возвращаем обновленный список заметок
+            var notes = await _context.Notes
+                .Where(n => n.UserId == note.UserId)
+                .ToListAsync();
+
+            return Ok(notes);
         }
     }
 }

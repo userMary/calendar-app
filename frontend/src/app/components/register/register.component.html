@@ -1,0 +1,54 @@
+<button (click)="goHome()">Вернуться на главную</button>
+
+<h2>Регистрация</h2>
+<form (ngSubmit)="register(registerForm)" #registerForm="ngForm">
+  <!-- Email -->
+  <input 
+    type="email" 
+    name="email" 
+    [(ngModel)]="email" 
+    placeholder="Email" 
+    required
+    email
+    #emailInput="ngModel"
+  />
+  <div *ngIf="emailInput.invalid && emailInput.touched" style="color: red">
+      Введите корректный email
+  </div>
+
+  <!-- Пароль -->
+  <input 
+    type="password" 
+    name="password" 
+    [(ngModel)]="password" 
+    placeholder="Пароль" 
+    required
+    minlength="8"
+    pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@?!_\-=+*/]).{8,}$"
+    #passwordInput="ngModel"
+  />
+  <div *ngIf="passwordInput.invalid && passwordInput.touched" style="color: red">
+      Пароль должен быть не менее 8 символов и содержать:  
+      цифры, строчные и заглавные буквы, и спецсимвол (&#64;?!_-+=*/)
+  </div>
+
+  <!-- Имя -->
+  <input 
+    type="text" 
+    name="name" 
+    [(ngModel)]="name" 
+    placeholder="Имя" 
+    required
+    #nameInput="ngModel"
+  />
+  <div *ngIf="nameInput.invalid && nameInput.touched" style="color: red">
+      Укажите имя
+  </div>
+
+  <button type="submit" [disabled]="registerForm.invalid">Зарегистрироваться</button>
+</form>
+<button (click)="goToLogin()">Войти</button>
+
+<div *ngIf="errorMessage" style="color:red; margin-top:10px;">
+    {{ errorMessage }}
+</div>
