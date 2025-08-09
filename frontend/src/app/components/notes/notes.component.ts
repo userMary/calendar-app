@@ -3,14 +3,15 @@ import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { CalendarViewComponent } from '../calendar-view/calendar-view.component';
 
 @Component({
   selector: 'app-notes',
   standalone: true,
   templateUrl: './notes.component.html',
-  // styleUrls: ['./notes.component.css'],
-  styleUrl: './notes.component.css',
-  imports: [FormsModule, CommonModule]
+  styleUrls: ['./notes.component.css'],
+  //styleUrl: './notes.component.css',
+  imports: [FormsModule, CommonModule, CalendarViewComponent]
 })
 export class NotesComponent {
   notes: any[] = [];
@@ -61,6 +62,7 @@ export class NotesComponent {
       },
       error: (err) => alert('Ошибка добавления заметки: ' + err.error)
     });
+    this.loadNotes(); // после успешного добавления/редактирования
   }
 
   logout() {
@@ -115,9 +117,4 @@ export class NotesComponent {
       }
     });
   }
-
-
-
-
-
 }

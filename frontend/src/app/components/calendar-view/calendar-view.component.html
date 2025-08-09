@@ -1,0 +1,383 @@
+<div class="calendar-container">
+
+  <div class="calendar-header">
+    <button (click)="prevMonth()" title="Предыдущий месяц">&#9664;</button>
+    <h2 (click)="toggleYearView()" class="month-year">
+      {{ getMonthName(currentMonth) }} {{ currentYear }}
+    </h2>
+    <button (click)="nextMonth()" title="Следующий месяц">&#9654;</button>
+  </div>
+
+  <!-- Годовой режим -->
+  <div *ngIf="showYearView" class="year-view">
+    <div class="year-month" *ngFor="let month of [].constructor(12); let i = index" (click)="setMonth(i)">
+      <div class="month-name">{{ getMonthName(i) }}</div>
+      <div class="mini-calendar">
+        <div class="day-names">
+          <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+        </div>
+        <div class="days">
+          <div class="day" *ngFor="let d of generateMiniCalendar(i)">
+            {{ d }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Месячный режим -->
+  <table *ngIf="!showYearView" class="calendar-table">
+    <thead>
+      <tr>
+        <th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let week of weeks">
+        <td *ngFor="let day of week" (click)="onDayClick(day)" [class.empty]="day === null">
+          <div class="day-number" *ngIf="day">{{ day }}</div>
+          <div class="notes-list">
+            <div
+              *ngFor="let note of getNotesForDay(day)"
+              class="note"
+              [ngStyle]="{'background-color': note.color || '#fff'}"
+              (click)="onNoteClick(note, $event)"
+              title="{{ note.title }}">
+              {{ note.title }}
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Модальное окно редактирования заметки -->
+  <div class="modal" *ngIf="editNoteData">
+    <div class="modal-content">
+      <h3>{{ editNoteData.id ? 'Редактирование заметки' : 'Добавить заметку' }}</h3>
+
+      <label>Дата</label>
+      <input type="date" [(ngModel)]="editNoteData.date" />
+
+      <label>Заголовок</label>
+      <input type="text" [(ngModel)]="editNoteData.title" maxlength="100" />
+
+      <label>Описание</label>
+      <textarea [(ngModel)]="editNoteData.description" rows="4"></textarea>
+
+      <label>Цвет заметки</label>
+      <select [(ngModel)]="editNoteData.color">
+        <option value="white">Белый</option>
+        <option value="#FFF9C4">Бледно-желтый</option>
+        <option value="#A5D6A7">Зеленый</option>
+        <option value="#EF9A9A">Красный</option>
+        <option value="#CE93D8">Фиолетовый</option>
+        <option value="#90CAF9">Синий</option>
+      </select>
+
+      <label>URL изображения (опционально)</label>
+      <input type="text" [(ngModel)]="editNoteData.imageUrl" placeholder="https://..." />
+
+      <div class="modal-buttons">
+        <button (click)="saveEdit()">Сохранить</button>
+        <button (click)="closeEditModal()">Отмена</button>
+        <button *ngIf="editNoteData.id" (click)="confirmDelete()" class="delete-btn">Удалить</button>
+      </div>
+
+      <!-- Подтверждение удаления -->
+      <div *ngIf="showConfirmDelete" class="confirm-delete">
+        <p>Вы уверены, что хотите удалить эту заметку?</p>
+        <button (click)="deleteNote()" class="delete-btn">Да, удалить</button>
+        <button (click)="showConfirmDelete = false">Отмена</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- В общем и целом работает -->
+
+
+
+<!-- <h3>Календарь заметок</h3>
+
+<p>Текущий месяц: {{ currentMonth + 1 }}/{{ currentYear }}</p>
+<p>Количество заметок: {{ notes.length }}</p> -->
+
+<!-- Заголовок месяца с переключением -->
+<!-- <div class="calendar-header">
+  <span class="nav-arrow" (click)="prevMonth()">&laquo;</span>
+  <span class="month-title" (click)="toggleYearView()">{{ getMonthName(currentMonth) }} {{ currentYear }}</span>
+  <span class="nav-arrow" (click)="nextMonth()">&raquo;</span>
+</div> -->
+
+<!-- Вид года -->
+<!-- <div *ngIf="showYearView" class="year-grid">
+  <div *ngFor="let m of [].constructor(12); let i = index" class="month-cell" (click)="selectMonth(i)">
+    {{ getMonthName(i) }}
+  </div>
+</div> -->
+
+<!-- Вид месяца -->
+<!-- <div *ngIf="!showYearView"> -->
+  <!-- Сетка дней недели -->
+  <!-- <div class="calendar-row header-cell">
+    <div class="calendar-cell" *ngFor="let day of ['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС']">{{ day }}</div>
+  </div> -->
+
+  <!-- Сетка календаря -->
+  <!-- <div class="calendar-body">
+    <div class="calendar-row" *ngFor="let week of weeks">
+      <div
+        class="calendar-cell"
+        *ngFor="let day of week"
+        [class.empty]="day === null"
+        (click)="onDayClick(day)"
+      >
+        <div *ngIf="day" class="day-number">{{ day }}</div> -->
+
+        <!-- Превью заметок -->
+        <!-- <div
+          class="note-preview"
+          *ngFor="let note of getNotesForDay(day)"
+          (click)="onNoteClick(note, $event)"
+        >
+          <strong>{{ note.title }}</strong><br />
+          <span>{{ note.description | slice:0:50 }}{{ note.description.length > 50 ? '...' : '' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Вид "год с мини-календарями" -->
+<!-- <div *ngIf="showYearView" class="year-view">
+  <div
+    class="month-box"
+    *ngFor="let month of [0,1,2,3,4,5,6,7,8,9,10,11]"
+    (click)="selectMonth(month)"
+  >
+    <div class="month-name">
+      {{ ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'][month] }}
+    </div>
+    <div class="mini-calendar">
+      <div class="mini-day" *ngFor="let d of ['П','В','С','Ч','П','С','В']">{{ d }}</div>
+      <div
+        class="mini-cell"
+        *ngFor="let day of generateMiniCalendar(month)"
+        [class.empty]="day === null"
+      >
+        {{ day || '' }}
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Модальное окно редактирования -->
+<!-- <div class="modal" *ngIf="editNoteData">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h4>Редактировать заметку</h4>
+
+    <label>Дата: {{ editNoteData.date }}</label><br />
+
+    <label>Заголовок</label>
+    <input [(ngModel)]="editNoteData.title" type="text" />
+
+    <label>Описание</label>
+    <textarea [(ngModel)]="editNoteData.description"></textarea>
+
+    <div class="modal-buttons">
+      <button (click)="saveEdit()">Сохранить</button>
+      <button (click)="closeEditModal()">Отмена</button>
+      <button *ngIf="editNoteData.id" (click)="confirmDelete()">Удалить</button>
+    </div>
+
+    <div class="confirm-delete" *ngIf="showConfirmDelete">
+      <p>Вы действительно хотите удалить заметку?</p>
+      <button (click)="deleteNote()">Да</button>
+      <button (click)="showConfirmDelete = false">Нет</button>
+    </div>
+  </div>
+</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <h3>Календарь заметок</h3> -->
+
+<!-- Инфо -->
+<!-- <p>Текущий месяц: {{ currentMonth + 1 }}/{{ currentYear }}</p>
+<p>Количество заметок: {{ notes.length }}</p> -->
+
+<!-- Заголовок месяца с переключением -->
+<!-- <div class="calendar-header">
+  <span class="nav-arrow" (click)="prevMonth()">&laquo;</span>
+  <span class="month-title" (click)="toggleYearView()">{{ getMonthName(currentMonth) }} {{ currentYear }}</span>
+  <span class="nav-arrow" (click)="nextMonth()">&raquo;</span>
+</div> -->
+
+<!-- Вид года -->
+<!-- <div *ngIf="showYearView" class="year-grid">
+  <div *ngFor="let m of [].constructor(12); let i = index" class="month-cell" (click)="selectMonth(i)">
+    {{ getMonthName(i) }}
+  </div>
+</div> -->
+
+<!-- Вид месяца -->
+<!-- <div *ngIf="!showYearView"> -->
+  <!-- Сетка дней недели -->
+  <!-- <div class="calendar-row header-cell">
+    <div class="calendar-cell" *ngFor="let day of ['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС']">{{ day }}</div>
+  </div> -->
+
+  <!-- Сетка календаря -->
+  <!-- <div class="calendar-body">
+    <div class="calendar-row" *ngFor="let week of weeks">
+      <div
+        class="calendar-cell"
+        *ngFor="let day of week"
+        [class.empty]="day === null"
+        (click)="onDayClick(day)"
+      >
+        <div *ngIf="day" class="day-number">{{ day }}</div> -->
+
+        <!-- Превью заметок -->
+        <!-- <div
+          class="note-preview"
+          *ngFor="let note of getNotesForDay(day)"
+          (click)="onNoteClick(note, $event)"
+        >
+          <strong>{{ note.title }}</strong><br />
+          <span>{{ note.description | slice: 0:50 }}...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Вид "год с мини-календарями" -->
+<!-- <div *ngIf="showYearView" class="year-view">
+  <div
+    class="month-box"
+    *ngFor="let month of [0,1,2,3,4,5,6,7,8,9,10,11]"
+    (click)="selectMonth(month)"
+  >
+    <div class="month-name">
+      {{ ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'][month] }}
+    </div>
+    <div class="mini-calendar">
+      <div class="mini-weekdays">
+        <span *ngFor="let d of ['П','В','С','Ч','П','С','В']">{{ d }}</span>
+      </div>
+      <div class="mini-days">
+        <span *ngFor="let d of generateMiniCalendar(month)">{{ d }}</span>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Модальное окно для редактирования / добавления -->
+<!-- <div class="modal" *ngIf="editNoteData">
+  <div class="modal-content">
+    <h3>{{ editNoteData.id ? 'Редактирование' : 'Новая' }} заметка</h3>
+
+    <input [(ngModel)]="editNoteData.title" placeholder="Заголовок" />
+    <input type="date" [(ngModel)]="editNoteData.date" />
+    <textarea [(ngModel)]="editNoteData.description" placeholder="Описание"></textarea> -->
+
+    <!-- Валидация -->
+    <!-- <div *ngIf="!editNoteData.title || !editNoteData.description" class="error">
+      Все поля должны быть заполнены.
+    </div>
+
+    <div class="modal-buttons">
+      <button (click)="saveEdit()">Сохранить</button>
+      <button (click)="closeEditModal()">Отмена</button>
+      <button *ngIf="editNoteData.id" class="delete" (click)="confirmDelete()">Удалить</button>
+    </div>
+  </div>
+</div> -->
+
+<!-- Подтверждение удаления -->
+<!-- <div class="modal confirm" *ngIf="showConfirmDelete">
+  <div class="modal-content">
+    <p>Вы уверены, что хотите удалить заметку?</p>
+    <div class="modal-buttons">
+      <button (click)="deleteNote()">Да</button>
+      <button (click)="showConfirmDelete = false">Нет</button>
+    </div>
+  </div>
+</div> -->

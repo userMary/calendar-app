@@ -57,18 +57,29 @@ namespace CalendarApp.Controllers
 
         // Обновить заметку
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Note note)
+        public async Task<IActionResult> Update(int id, [FromBody] NoteRequest noteDto)
         {
-            var existingNote = await _context.Notes.FindAsync(id);
-            if (existingNote == null) return NotFound("Заметка не найдена");
+            if (noteDto == null)
+                return BadRequest(new { message = "Тело запроса пустое" });
 
-            existingNote.Title = note.Title;
-            existingNote.Description = note.Description;
-            existingNote.Date = note.Date;
-            existingNote.Color = note.Color;
-            existingNote.ImageUrl = note.ImageUrl;
+            var existingNote = await _context.Notes.FindAsync(id);
+            if (existingNote == null)
+                return NotFound(new { message = "Заметка не найдена" });
+
+            // Защита: не разрешаем менять владельца заметки через этот метод
+            if (existingNote.UserId != noteDto.UserId)
+            {
+                return BadRequest(new { message = "Нельзя менять владельца заметки" });
+            }
+
+            existingNote.Title = noteDto.Title;
+            existingNote.Description = noteDto.Description;
+            existingNote.Date = noteDto.Date;
+            existingNote.Color = noteDto.Color;
+            existingNote.ImageUrl = noteDto.ImageUrl;
 
             await _context.SaveChangesAsync();
+
             return Ok(existingNote);
         }
 

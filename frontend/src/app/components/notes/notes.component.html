@@ -2,10 +2,26 @@
 <button (click)="logout()">Выйти</button>
 <button (click)="goHome()">Вернуться на главную (пока что с выходом из аккаунта)</button>
 
+
+
+
+<!-- notes.component.html -->
+<!-- <app-calendar-view 
+  [notes]="notes" 
+  (noteClicked)="onNoteSelected($event)" 
+  (noteDeleteRequested)="onDeleteNote($event)">
+</app-calendar-view> -->
+
+
+
+
+
 <h2>Мои заметки</h2>
 <div *ngIf="user">
   <p><strong>Пользователь:</strong> {{ user.name }} ({{ user.email }})</p>
 </div>
+
+<app-calendar-view [notes]="notes"></app-calendar-view>
 
 <!-- Список заметок -->
 <div *ngFor="let note of notes" class="note">

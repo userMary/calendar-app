@@ -40,7 +40,9 @@ namespace CalendarApp.Controllers
             //    return BadRequest("Пользователь с таким email уже существует");
             //}
             // Проверка, что пользователь уже существует
-            if (_context.Users.Any(u => u.Email == user.Email))
+            //if (_context.Users.Any(u => u.Email == user.Email))
+            if (await _context.Users.AnyAsync(u => u.Email == user.Email))
+
                 return BadRequest(new { message = "Пользователь с таким email уже существует" });
 
             // Пока пароль храним как есть (позже сделаем хэширование)

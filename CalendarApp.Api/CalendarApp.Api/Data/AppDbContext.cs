@@ -11,5 +11,17 @@ namespace CalendarApp.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Note> Notes { get; set; }
+
+        // Гарантирует, что при удалении пользователя, удалятся и его заметки
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Notes)
+                .WithOne(n => n.User)
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }
