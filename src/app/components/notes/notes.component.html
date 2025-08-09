@@ -1,0 +1,70 @@
+<!-- Кнопка выхода -->
+<button (click)="logout()">Выйти</button>
+<button (click)="goHome()">Вернуться на главную (пока что с выходом из аккаунта)</button>
+
+
+
+
+<!-- notes.component.html -->
+<!-- <app-calendar-view 
+  [notes]="notes" 
+  (noteClicked)="onNoteSelected($event)" 
+  (noteDeleteRequested)="onDeleteNote($event)">
+</app-calendar-view> -->
+
+
+
+
+
+<h2>Мои заметки</h2>
+<div *ngIf="user">
+  <p><strong>Пользователь:</strong> {{ user.name }} ({{ user.email }})</p>
+</div>
+
+<app-calendar-view [notes]="notes"></app-calendar-view>
+
+<!-- Список заметок -->
+<div *ngFor="let note of notes" class="note">
+  <h3>{{ note.title }}</h3>
+  <p>{{ note.date | date:'dd.MM.yyyy' }}</p>
+  <p>{{ note.description }}</p>
+  <button (click)="openEditModal(note)">Редактировать</button>
+  <button (click)="openDeleteConfirm(note)">Удалить</button>
+  <hr>
+</div>
+
+<!-- Модальное окно редактирования -->
+<div class="modal" *ngIf="editNoteData">
+  <div class="modal-content">
+    <h3>Редактировать заметку</h3>
+    <input [(ngModel)]="editNoteData.title" placeholder="Заголовок">
+    <textarea [(ngModel)]="editNoteData.description" placeholder="Описание"></textarea>
+    <input type="date" [(ngModel)]="editNoteData.date">
+    <div class="modal-buttons">
+      <button (click)="saveEdit()">Сохранить</button>
+      <button (click)="closeEditModal()">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- Подтверждение удаления -->
+<div class="modal" *ngIf="deleteNoteData">
+    <div class="modal-content">
+      <p>Удалить заметку <strong>{{ deleteNoteData.title }}</strong>?</p>
+      <div class="modal-buttons">
+        <button (click)="confirmDelete()">Да</button>
+        <button (click)="cancelDelete()">Нет</button>
+      </div>
+    </div>
+  </div>
+
+<form (ngSubmit)="addNote()" #noteForm="ngForm">
+  <input type="text" [(ngModel)]="title" name="title" placeholder="Заголовок" required>
+  <input type="date" [(ngModel)]="date" name="date" required>
+  <input type="text" [(ngModel)]="description" name="description" placeholder="Описание">
+  <button type="submit">Добавить заметку</button>
+</form>
+
+<div *ngIf="errorMessage" style="color:red; margin-top:10px;">
+    {{ errorMessage }}
+</div>
