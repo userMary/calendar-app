@@ -19,7 +19,47 @@ namespace CalendarApp.Controllers
             _context = context;
         }
 
-        // Регистрация нового пользователя
+        // Регистрация нового пользователя - РАБОТАЕТ ДЛЯ WINDOWS FORM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+        [HttpPost("registeruser")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            // Валидация Email
+            if (!new EmailAddressAttribute().IsValid(request.Email))
+                return BadRequest(new { message = "Введите корректный email" });
+
+
+            // Валидация пароля
+            var password = request.Password;
+            var regex = new Regex(@"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@?!_\-=+*/]).{8,}$");
+            if (!regex.IsMatch(password))
+                return BadRequest(new
+                {
+                    message = "Пароль не соответствует требованиям. " +
+                    "Пароль должен быть не менее 8 символов и содержать: " +
+                    "цифры, строчные и заглавные буквы, и спецсимвол (&#64;?!_-+=*/)"
+                });
+
+            // Проверка, что пользователь с таким email уже есть
+            if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+                return BadRequest(new { message = "Пользователь с таким email уже существует" });
+
+            // Создаем нового пользователя
+            var user = new User
+            {
+                Email = request.Email,
+                PasswordHash = request.Password, // пока без хэширования
+                Name = request.Name
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { user.Id, user.Email, user.Name });
+        }
+
+
+
+        // Регистрация нового пользователя - РАБОТАЕТ ДЛЯ WEB!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User user)
         {
@@ -31,9 +71,12 @@ namespace CalendarApp.Controllers
             var password = user.PasswordHash;
             var regex = new Regex(@"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@?!_\-=+*/]).{8,}$");
             if (!regex.IsMatch(password))
-                return BadRequest(new { message = "Пароль не соответствует требованиям. " +
+                return BadRequest(new
+                {
+                    message = "Пароль не соответствует требованиям. " +
                     "Пароль должен быть не менее 8 символов и содержать: " +
-                    "цифры, строчные и заглавные буквы, и спецсимвол (&#64;?!_-+=*/)" });
+                    "цифры, строчные и заглавные буквы, и спецсимвол (&#64;?!_-+=*/)"
+                });
 
             // Проверяем, есть ли уже пользователь с таким email
             // Проверка, что пользователь уже существует

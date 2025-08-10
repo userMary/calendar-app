@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using CalendarApp.Desktop.Models;
+using CalendarAppWinForms.Models;
 
 namespace CalendarApp.Desktop.Services
 {
@@ -21,6 +22,17 @@ namespace CalendarApp.Desktop.Services
             if (!res.IsSuccessStatusCode) return null;
             return await res.Content.ReadFromJsonAsync<UserDto>();
         }
+
+        public async Task<(bool Success, string? ErrorMessage)> RegisterAsync(RegisterRequest request)
+        {
+            var res = await _http.PostAsJsonAsync("api/Users/registeruser", request);
+            if (res.IsSuccessStatusCode)
+                return (true, null);
+
+            var error = await res.Content.ReadAsStringAsync();
+            return (false, error);
+        }
+
 
         public async Task<List<NoteDto>> GetNotesForUserAsync(int userId)
         {
