@@ -17,6 +17,7 @@ namespace CalendarApp.Desktop.Forms
     public partial class RegisterForm : Form
     {
         //private readonly HttpClient _httpClient;
+
         private readonly ApiService _apiService;
         public RegisterForm()
         {
