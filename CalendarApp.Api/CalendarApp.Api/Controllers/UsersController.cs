@@ -31,7 +31,9 @@ namespace CalendarApp.Controllers
             var password = user.PasswordHash;
             var regex = new Regex(@"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@?!_\-=+*/]).{8,}$");
             if (!regex.IsMatch(password))
-                return BadRequest(new { message = "Пароль не соответствует требованиям" });
+                return BadRequest(new { message = "Пароль не соответствует требованиям. " +
+                    "Пароль должен быть не менее 8 символов и содержать: " +
+                    "цифры, строчные и заглавные буквы, и спецсимвол (&#64;?!_-+=*/)" });
 
             // Проверяем, есть ли уже пользователь с таким email
             // Проверка, что пользователь уже существует
