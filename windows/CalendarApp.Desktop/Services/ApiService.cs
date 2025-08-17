@@ -32,6 +32,15 @@ namespace CalendarApp.Desktop.Services
             var error = await res.Content.ReadAsStringAsync();
             return (false, error);
         }
+        //        public async Task<(bool Success, string? ErrorMessage)> RegisterAsync(RegisterRequest request)
+        //{
+        //    var res = await _http.PostAsJsonAsync("Users/registeruser", request);
+        //    if (res.IsSuccessStatusCode)
+        //        return (true, null);
+
+        //    var error = await res.Content.ReadAsStringAsync();
+        //    return (false, error);
+        //}
 
 
         public async Task<List<NoteDto>> GetNotesForUserAsync(int userId)

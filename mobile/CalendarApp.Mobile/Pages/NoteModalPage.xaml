@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CalendarApp.Mobile.Views.NoteModalPage"
+             BackgroundColor="White"
+             Padding="20">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="15">
+
+            <Label Text="Заголовок" FontAttributes="Bold"/>
+            <Entry x:Name="TitleEntry" Placeholder="Введите заголовок" TextColor="Black"/>
+
+            <Label Text="Описание" FontAttributes="Bold"/>
+            <Editor x:Name="DescriptionEditor" Placeholder="Введите описание" HeightRequest="100" TextColor="Black"/>
+
+            <Label Text="Дата" FontAttributes="Bold"/>
+            <DatePicker x:Name="DatePickerControl" TextColor="Black"/>
+
+            <Label Text="Цвет заметки" FontAttributes="Bold"/>
+            <HorizontalStackLayout Spacing="10">
+                <Button BackgroundColor="White" Clicked="OnColorClicked"/>
+                <Button BackgroundColor="LightYellow" Clicked="OnColorClicked"/>
+                <Button BackgroundColor="LightGreen" Clicked="OnColorClicked"/>
+                <Button BackgroundColor="LightCoral" Clicked="OnColorClicked"/>
+                <Button BackgroundColor="LightBlue" Clicked="OnColorClicked"/>
+                <Button BackgroundColor="Plum" Clicked="OnColorClicked"/>
+            </HorizontalStackLayout>
+
+            <Label Text="Изображение (URL)" FontAttributes="Bold"/>
+            <Entry x:Name="ImageEntry" Placeholder="Введите URL изображения"/>
+
+            <Image x:Name="PreviewImage" HeightRequest="150" Aspect="AspectFill"/>
+
+            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Button Text="Сохранить" Clicked="OnSaveClicked"/>
+                <Button Text="Удалить" Clicked="OnDeleteClicked" BackgroundColor="LightCoral" TextColor="White"
+                        IsVisible="{Binding IsExistingNote}"/>
+                <Button Text="Отмена" Clicked="OnCancelClicked"/>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

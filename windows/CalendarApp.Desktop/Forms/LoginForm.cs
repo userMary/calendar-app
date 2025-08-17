@@ -23,7 +23,8 @@ namespace CalendarApp.Desktop.Forms
             InitializeComponent();
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:7105/api/") // твой адрес API
+                //BaseAddress = new Uri("https://localhost:7105/api/") // твой адрес API
+                BaseAddress = new Uri("http://localhost:7105/api/") // твой адрес API
             };
         }
 

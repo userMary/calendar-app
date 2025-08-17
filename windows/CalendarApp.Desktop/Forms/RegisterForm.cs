@@ -26,7 +26,7 @@ namespace CalendarApp.Desktop.Forms
             //{
             //    BaseAddress = new Uri("https://localhost:7105/api/")
             //};
-            _apiService = new ApiService("https://localhost:7105/api");
+            _apiService = new ApiService("http://localhost:7105/api");
         }
 
         private async void btnRegister_Click(object sender, EventArgs e)

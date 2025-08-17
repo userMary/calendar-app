@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CalendarApp.Mobile.Pages.CalendarPage"
+             Title="Календарь">
+
+    <StackLayout Padding="10" Spacing="10">
+
+        <!-- Верхняя панель с месяцем и стрелками -->
+        <Grid ColumnSpacing="10" RowSpacing="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Text="⟨" Clicked="OnPrevMonthClicked"/>
+            <Label x:Name="monthLabel"
+                   Grid.Column="1"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontAttributes="Bold"
+                   FontSize="20"/>
+            <Button Text="⟩" Grid.Column="2" Clicked="OnNextMonthClicked"/>
+        </Grid>
+
+        <!-- Сетка дней недели -->
+        <Grid ColumnSpacing="5" RowSpacing="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="Пн" HorizontalOptions="Center"/>
+            <Label Text="Вт" HorizontalOptions="Center"/>
+            <Label Text="Ср" HorizontalOptions="Center"/>
+            <Label Text="Чт" HorizontalOptions="Center"/>
+            <Label Text="Пт" HorizontalOptions="Center"/>
+            <Label Text="Сб" HorizontalOptions="Center"/>
+            <Label Text="Вс" HorizontalOptions="Center"/>
+        </Grid>
+
+        <!-- Сетка чисел месяца -->
+        <Grid x:Name="daysGrid" ColumnSpacing="5" RowSpacing="5">
+            <!-- Кнопки дней будут добавляться динамически в коде при обновлении календаря -->
+        </Grid>
+
+        <!-- Кнопка добавления заметки -->
+        <Button Text="Добавить заметку" Clicked="OnAddNoteClicked" BackgroundColor="#4CAF50" TextColor="White"/>
+
+        <!-- Список заметок выбранного дня -->
+        <ScrollView>
+            <StackLayout x:Name="notesStack" Spacing="5"/>
+        </ScrollView>
+
+    </StackLayout>
+</ContentPage>

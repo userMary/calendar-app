@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CalendarApp.Models
 {
     public class Note
@@ -11,6 +13,8 @@ namespace CalendarApp.Models
 
         // Связь с пользователем
         public int UserId { get; set; }
+
+        [JsonIgnore] // Игнорируем Notes при сериализации User
         public User? User { get; set; }
     }
 }
