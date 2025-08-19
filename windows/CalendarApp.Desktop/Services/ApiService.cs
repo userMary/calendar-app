@@ -63,6 +63,11 @@ namespace CalendarApp.Desktop.Services
             return res.IsSuccessStatusCode;
         }
 
-        // ... добавь UpdateNoteAsync, UploadImageAsync при необходимости
+        public async Task<bool> UpdateNoteAsync(int id, NoteDto note)
+        {
+            var res = await _http.PutAsJsonAsync($"api/Notes/{id}", note);
+            return res.IsSuccessStatusCode;
+        }
+        // UploadImageAsync при необходимости
     }
 }
