@@ -24,17 +24,17 @@
 <app-calendar-view [notes]="notes"></app-calendar-view>
 
 <!-- Список заметок -->
-<div *ngFor="let note of notes" class="note">
+<!-- <div *ngFor="let note of notes" class="note">
   <h3>{{ note.title }}</h3>
   <p>{{ note.date | date:'dd.MM.yyyy' }}</p>
   <p>{{ note.description }}</p>
   <button (click)="openEditModal(note)">Редактировать</button>
   <button (click)="openDeleteConfirm(note)">Удалить</button>
   <hr>
-</div>
+</div> -->
 
 <!-- Модальное окно редактирования -->
-<div class="modal" *ngIf="editNoteData">
+<!-- <div class="modal" *ngIf="editNoteData">
   <div class="modal-content">
     <h3>Редактировать заметку</h3>
     <input [(ngModel)]="editNoteData.title" placeholder="Заголовок">
@@ -45,10 +45,10 @@
       <button (click)="closeEditModal()">Отмена</button>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- Подтверждение удаления -->
-<div class="modal" *ngIf="deleteNoteData">
+<!-- <div class="modal" *ngIf="deleteNoteData">
     <div class="modal-content">
       <p>Удалить заметку <strong>{{ deleteNoteData.title }}</strong>?</p>
       <div class="modal-buttons">
@@ -56,9 +56,9 @@
         <button (click)="cancelDelete()">Нет</button>
       </div>
     </div>
-  </div>
+  </div> -->
 
-<form (ngSubmit)="addNote()" #noteForm="ngForm">
+<!-- <form (ngSubmit)="addNote()" #noteForm="ngForm">
   <input type="text" [(ngModel)]="title" name="title" placeholder="Заголовок" required>
   <input type="date" [(ngModel)]="date" name="date" required>
   <input type="text" [(ngModel)]="description" name="description" placeholder="Описание">
@@ -67,4 +67,4 @@
 
 <div *ngIf="errorMessage" style="color:red; margin-top:10px;">
     {{ errorMessage }}
-</div>
+</div> -->
