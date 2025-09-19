@@ -143,12 +143,38 @@ namespace CalendarApp.Controllers
         }
 
 
-        // ѕолучить всех пользователей (дл€ теста)
+        //// ѕолучить всех пользователей (дл€ теста)
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    var users = await _context.Users.ToListAsync();
+        //    return Ok(users);
+        //}
+
+        // GET: api/Users
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
-            var users = await _context.Users.ToListAsync();
+            var users = _context.Users.Select(u => new {
+                u.Id,
+                u.Email,
+                u.Name
+            }).ToList();
             return Ok(users);
         }
+
+        // DELETE: api/Users/{id}
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var user = _context.Users.Find(id);
+            if (user == null) return NotFound();
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            return NoContent();
+        }
+
+
+
     }
 }

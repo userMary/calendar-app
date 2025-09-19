@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment'; // <- путь от services
 import { Note } from '../models/note.model';
 import { User } from '../models/user.model';
+import { AdminLoginComponent } from '../components/admin-login/admin-login.component';
+import { AdminPanelComponent } from '../components/admin-panel/admin-panel.component';
 
 @Injectable({
   providedIn: 'root'
@@ -75,4 +77,14 @@ export class ApiService {
   deleteNote(id: number): Observable<Note[]> {
     return this.http.delete<Note[]>(`${this.baseUrl}/Notes/${id}`);
   }
+
+  // Получение всех пользователей
+getAllUsers(): Observable<User[]> {
+  return this.http.get<User[]>(`${this.baseUrl}/Users`);
+}
+
+// Удаление пользователя по Id
+deleteUser(userId: number): Observable<any> {
+  return this.http.delete(`${this.baseUrl}/Users/${userId}`);
+}
 }

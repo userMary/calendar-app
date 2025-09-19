@@ -1,0 +1,16 @@
+<button (click)="goHome()">Вернуться на главную</button>
+
+<h2>Вход администратора</h2>
+<form (ngSubmit)="login()" #adminForm="ngForm">
+  <input type="text" [(ngModel)]="email" name="email" placeholder="Email" required>
+  <input type="password" [(ngModel)]="password" name="password" placeholder="Пароль" required>
+  <button type="submit"[disabled]="adminForm.invalid">Войти</button>
+</form>
+<div *ngIf="errorMessage" style="color:red; margin-top:10px;">
+  {{ errorMessage }}
+</div>
+
+
+<button (click)="goToLogin()">Войти</button>
+
+<button (click)="goToRegister()">Регистрация</button>
