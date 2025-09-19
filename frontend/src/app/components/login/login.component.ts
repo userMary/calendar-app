@@ -20,7 +20,7 @@ export class LoginComponent {
   constructor(private api: ApiService, private router: Router) {}
 
   login() {
-    this.api.login({ email: this.email, passwordHash: this.password }).subscribe({
+    this.api.login({ email: this.email, password: this.password }).subscribe({
       next: (user) => {
         localStorage.setItem('user', JSON.stringify(user));
         this.router.navigate(['/notes']);

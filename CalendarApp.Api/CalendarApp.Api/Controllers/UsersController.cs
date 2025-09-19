@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using CalendarApp.Data;
 using CalendarApp.DTOs;
 using CalendarApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ namespace CalendarApp.Controllers
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly PasswordHasher<User> _passwordHasher = new();
 
         public UsersController(AppDbContext context)
         {
@@ -47,9 +49,12 @@ namespace CalendarApp.Controllers
             var user = new User
             {
                 Email = request.Email,
-                PasswordHash = request.Password, // пока без хэширования
+                //PasswordHash = request.Password, // пока без хэширования
                 Name = request.Name
             };
+
+            // Хэшируем пароль
+            user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -87,8 +92,10 @@ namespace CalendarApp.Controllers
             // Проверка, что пользователь уже существует
             //if (_context.Users.Any(u => u.Email == user.Email))
             if (await _context.Users.AnyAsync(u => u.Email == user.Email))
-
                 return BadRequest(new { message = "Пользователь с таким email уже существует" });
+
+            // Хэшируем пароль
+            user.PasswordHash = _passwordHasher.HashPassword(user, user.PasswordHash);
 
             // Пока пароль храним как есть (позже сделаем хэширование)
             _context.Users.Add(user);
@@ -97,18 +104,44 @@ namespace CalendarApp.Controllers
             return Ok(user);
         }
 
-        // Вход пользователя
+        //// Вход пользователя
+        //[HttpPost("login")]
+        //public async Task<IActionResult> Login([FromBody] LoginRequest login)
+        //{
+        //    var existingUser = await _context.Users
+        //        .FirstOrDefaultAsync(u => u.Email == login.Email && u.PasswordHash == login.PasswordHash);
+
+        //    if (existingUser == null)
+        //        return Unauthorized("Неверный email или пароль");
+
+        //    // Проверяем хэш пароля
+        //    //var result = _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, login.PasswordHash);
+        //    //if (result == PasswordVerificationResult.Failed)
+        //    //    return Unauthorized("Неверный email или пароль");
+
+        //    return Ok(existingUser);
+        //}
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest login)
         {
             var existingUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == login.Email && u.PasswordHash == login.PasswordHash);
+                .FirstOrDefaultAsync(u => u.Email == login.Email);
 
             if (existingUser == null)
                 return Unauthorized("Неверный email или пароль");
 
-            return Ok(existingUser);
+            // Проверяем введённый пароль против хэша
+            var result = _passwordHasher.VerifyHashedPassword(
+                existingUser,
+                existingUser.PasswordHash,
+                login.Password);
+
+            if (result == PasswordVerificationResult.Failed)
+                return Unauthorized("Неверный email или пароль");
+
+            return Ok(new { existingUser.Id, existingUser.Email, existingUser.Name });
         }
+
 
         // Получить всех пользователей (для теста)
         [HttpGet]

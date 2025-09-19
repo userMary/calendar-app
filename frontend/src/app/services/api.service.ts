@@ -52,7 +52,7 @@ export class ApiService {
   }
 
   // Авторизация
-  login(payload: { email: string; passwordHash: string }): Observable<User> {
+  login(payload: { email: string; password: string }): Observable<User> {
     return this.http.post<User>(`${this.baseUrl}/Users/login`, payload);
   }
 
