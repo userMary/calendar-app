@@ -36,7 +36,7 @@ namespace CalendarApp.Controllers
             if (!regex.IsMatch(password))
                 return BadRequest(new
                 {
-                    message = "Пароль не соответствует требованиям. " +
+                    message = "Пароль для WinForm не соответствует требованиям. " +
                     "Пароль должен быть не менее 8 символов и содержать: " +
                     "цифры, строчные и заглавные буквы, и спецсимвол (&#64;?!_-+=*/)"
                 });
@@ -78,7 +78,7 @@ namespace CalendarApp.Controllers
             if (!regex.IsMatch(password))
                 return BadRequest(new
                 {
-                    message = "Пароль не соответствует требованиям. " +
+                    message = "Пароль для WEB не соответствует требованиям. " +
                     "Пароль должен быть не менее 8 символов и содержать: " +
                     "цифры, строчные и заглавные буквы, и спецсимвол (&#64;?!_-+=*/)"
                 });
@@ -128,7 +128,7 @@ namespace CalendarApp.Controllers
                 .FirstOrDefaultAsync(u => u.Email == login.Email);
 
             if (existingUser == null)
-                return Unauthorized("Неверный email или пароль");
+                return Unauthorized(new { message = "Неверный email или пароль" });
 
             // Проверяем введённый пароль против хэша
             var result = _passwordHasher.VerifyHashedPassword(
@@ -137,7 +137,7 @@ namespace CalendarApp.Controllers
                 login.Password);
 
             if (result == PasswordVerificationResult.Failed)
-                return Unauthorized("Неверный email или пароль");
+                return Unauthorized(new { message = "Неверный email или пароль" });
 
             return Ok(new { existingUser.Id, existingUser.Email, existingUser.Name });
         }

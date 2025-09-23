@@ -1,6 +1,10 @@
 ﻿using CalendarApp.Data;
+using CalendarApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CalendarApp.DTOs;
+
 
 namespace CalendarApp.Controllers
 {
@@ -9,10 +13,51 @@ namespace CalendarApp.Controllers
     public class AdminController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IPasswordHasher<Admin> _passwordHasher;
 
-        public AdminController(AppDbContext context)
+        public AdminController(AppDbContext context, IPasswordHasher<Admin> passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
+        }
+
+        //// POST api/Admin/loginadmin
+        //[HttpPost("loginadmin")]
+        //public async Task<IActionResult> Login([FromBody] LoginRequestAdmin request)
+        //{
+
+        //    var admin = await _context.Admins
+        //        .FirstOrDefaultAsync(a => a.Email == request.Email && a.PasswordHash == request.Password);
+
+        //    if (admin == null)
+        //        return Unauthorized(new { message = "Неверный email или пароль" });
+
+        //    return Ok(new
+        //    {
+        //        admin.Id,
+        //        admin.Email,
+        //        admin.Name
+        //    });
+        //}
+
+
+        [HttpPost("loginadmin")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestAdmin request)
+        {
+            var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == request.Email);
+            if (admin == null)
+                return Unauthorized(new { message = "Неверный логин или пароль ЛОГИН" });
+
+            var result = _passwordHasher.VerifyHashedPassword(admin, admin.PasswordHash, request.Password);
+            if (result == PasswordVerificationResult.Failed)
+                return Unauthorized(new { message = "Неверный логин или пароль ХЭШ" });
+
+            return Ok(new
+            {
+                admin.Id,
+                admin.Email,
+                admin.Name
+            });
         }
 
         // Получить всех пользователей

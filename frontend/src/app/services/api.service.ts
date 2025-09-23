@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment'; // <- путь от services
 import { Note } from '../models/note.model';
 import { User } from '../models/user.model';
+import { Admin } from '../models/admin.model';
 import { AdminLoginComponent } from '../components/admin-login/admin-login.component';
 import { AdminPanelComponent } from '../components/admin-panel/admin-panel.component';
 
@@ -58,6 +59,11 @@ export class ApiService {
     return this.http.post<User>(`${this.baseUrl}/Users/login`, payload);
   }
 
+  // Авторизация администратора
+  loginAdmin(admin: { email: string; password: string }): Observable<Admin> {
+    return this.http.post<Admin>(`${this.baseUrl}/Admin/loginadmin`, admin);
+  }
+
   // Получение заметок по ID пользователя
   getNotes(userId: number): Observable<Note[]> {
     return this.http.get<Note[]>(`${this.baseUrl}/Notes/user/${userId}`);
@@ -78,13 +84,16 @@ export class ApiService {
     return this.http.delete<Note[]>(`${this.baseUrl}/Notes/${id}`);
   }
 
-  // Получение всех пользователей
-getAllUsers(): Observable<User[]> {
-  return this.http.get<User[]>(`${this.baseUrl}/Users`);
-}
+  // Получение всех пользователей для админа
+  getAllUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.baseUrl}/Users`);
+  }
 
-// Удаление пользователя по Id
-deleteUser(userId: number): Observable<any> {
-  return this.http.delete(`${this.baseUrl}/Users/${userId}`);
-}
+  // Удаление пользователя по Id для админа
+  deleteUser(userId: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/Users/${userId}`);
+  }
+  // deleteUser(userId: number) {
+  //   return this.http.delete(`${this.baseUrl}/Users/${userId}`);
+  // }
 }

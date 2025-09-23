@@ -11,6 +11,7 @@ namespace CalendarApp.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Note> Notes { get; set; }
+        public DbSet<Admin> Admins { get; set; }
 
         // Гарантирует, что при удалении пользователя, удалятся и его заметки
         protected override void OnModelCreating(ModelBuilder modelBuilder)

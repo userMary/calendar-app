@@ -19,11 +19,18 @@ export class AdminPanelComponent implements OnInit {
   constructor(private api: ApiService, private router: Router) {}
 
   ngOnInit() {
-    if (!localStorage.getItem('admin')) {
+    // if (!localStorage.getItem('admin')) {
+    //   this.router.navigate(['/admin-login']);
+    //   return;
+    // }
+    // this.loadUsers();
+    const admin = localStorage.getItem('admin');
+    if (!admin) {
       this.router.navigate(['/admin-login']);
       return;
     }
     this.loadUsers();
+
   }
 
   loadUsers() {

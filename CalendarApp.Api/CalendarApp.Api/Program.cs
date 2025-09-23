@@ -1,4 +1,6 @@
 using CalendarApp.Data;
+using CalendarApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,7 +56,8 @@ builder.Services.AddControllers()
     });
 
 
-
+// Регистрация PasswordHasher для админов
+builder.Services.AddScoped<IPasswordHasher<Admin>, PasswordHasher<Admin>>();
 
 
 
@@ -69,6 +72,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage(); // Показывает реальные ошибки
     app.UseSwagger();
     app.UseSwaggerUI();
 }

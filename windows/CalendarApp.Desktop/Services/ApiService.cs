@@ -17,7 +17,8 @@ namespace CalendarApp.Desktop.Services
 
         public async Task<UserDto?> LoginAsync(string email, string password)
         {
-            var payload = new LoginRequestDto { Email = email, PasswordHash = password };
+            //var payload = new LoginRequestDto { Email = email, PasswordHash = password };
+            var payload = new LoginRequestDto { Email = email, Password = password };
             var res = await _http.PostAsJsonAsync("api/Users/login", payload);
             if (!res.IsSuccessStatusCode) return null;
             return await res.Content.ReadFromJsonAsync<UserDto>();
@@ -26,6 +27,7 @@ namespace CalendarApp.Desktop.Services
         public async Task<(bool Success, string? ErrorMessage)> RegisterAsync(RegisterRequest request)
         {
             var res = await _http.PostAsJsonAsync("api/Users/registeruser", request);
+            //var res = await _http.PostAsJsonAsync("api/Users/register", request);
             if (res.IsSuccessStatusCode)
                 return (true, null);
 
