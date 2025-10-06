@@ -72,9 +72,31 @@ namespace CalendarApp.Desktop.Forms
 
             if (success)
             {
-                MessageBox.Show("Регистрация прошла успешно! Теперь войдите в систему.",
-                    "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Close();
+                // сразу пробуем логиниться
+                var user = await AppState.Api.LoginAsync(request.Email, request.Password);
+
+                if (user != null)
+                {
+                    AppState.CurrentUser = user;
+
+                    MessageBox.Show("Регистрация прошла успешно!", "Успех",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // открываем календарь
+                    var calendar = new CalendarForm2(AppState.Api, user.Id);
+                    calendar.Show();
+                    this.Hide();
+                }
+                else
+                {
+                    MessageBox.Show("Регистрация успешна, но не удалось войти автоматически.",
+                        "Ошибка входа", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                    var loginForm = new LoginForm();
+                    loginForm.Show();
+                    this.Hide();
+                }
+
             }
             else
             {
@@ -87,6 +109,11 @@ namespace CalendarApp.Desktop.Forms
             var loginForm = new LoginForm();
             loginForm.Show();
             this.Hide();
+        }
+
+        private void txtPassword_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

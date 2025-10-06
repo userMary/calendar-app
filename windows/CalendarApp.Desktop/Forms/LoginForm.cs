@@ -48,7 +48,10 @@ namespace CalendarApp.Desktop.Forms
                 AppState.CurrentUser = user;
 
                 // Открыть CalendarForm и скрыть LoginForm
-                var calendar = new CalendarForm(AppState.Api);
+                //var calendar = new CalendarForm(AppState.Api, AppState.CurrentUser.Id);
+                //calendar.Show();
+                //this.Hide();
+                var calendar = new CalendarForm2(AppState.Api, user.Id);
                 calendar.Show();
                 this.Hide();
             }

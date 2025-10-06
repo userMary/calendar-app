@@ -36,6 +36,13 @@
             panel5 = new Panel();
             panel6 = new Panel();
             panel7 = new Panel();
+            label9 = new Label();
+            label8 = new Label();
+            label3 = new Label();
+            label7 = new Label();
+            label4 = new Label();
+            label6 = new Label();
+            label5 = new Label();
             panel8 = new Panel();
             panel9 = new Panel();
             panel10 = new Panel();
@@ -75,13 +82,17 @@
             prevBtn = new Button();
             nextBtn = new Button();
             lblMonth = new Label();
+            headerPanel = new Panel();
+            label2 = new Label();
             calendarTable.SuspendLayout();
+            panel7.SuspendLayout();
+            headerPanel.SuspendLayout();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(706, 9);
+            label1.Location = new Point(676, 464);
             label1.Name = "label1";
             label1.Size = new Size(82, 15);
             label1.TabIndex = 0;
@@ -139,7 +150,7 @@
             calendarTable.Controls.Add(panel41, 5, 5);
             calendarTable.Controls.Add(panel42, 6, 5);
             calendarTable.Controls.Add(panel2, 1, 0);
-            calendarTable.Location = new Point(12, 86);
+            calendarTable.Location = new Point(7, 12);
             calendarTable.Name = "calendarTable";
             calendarTable.RowCount = 6;
             calendarTable.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
@@ -190,10 +201,81 @@
             // 
             // panel7
             // 
+            panel7.Controls.Add(label9);
+            panel7.Controls.Add(label8);
+            panel7.Controls.Add(label3);
+            panel7.Controls.Add(label7);
+            panel7.Controls.Add(label4);
+            panel7.Controls.Add(label6);
+            panel7.Controls.Add(label5);
             panel7.Location = new Point(771, 3);
             panel7.Name = "panel7";
             panel7.Size = new Size(122, 66);
             panel7.TabIndex = 6;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(48, -13);
+            label9.Name = "label9";
+            label9.Size = new Size(22, 15);
+            label9.TabIndex = 12;
+            label9.Text = "ВС";
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(-80, -13);
+            label8.Name = "label8";
+            label8.Size = new Size(22, 15);
+            label8.TabIndex = 11;
+            label8.Text = "СБ";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(-719, -13);
+            label3.Name = "label3";
+            label3.Size = new Size(25, 15);
+            label3.TabIndex = 6;
+            label3.Text = "ПН";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(-208, -13);
+            label7.Name = "label7";
+            label7.Size = new Size(23, 15);
+            label7.TabIndex = 10;
+            label7.Text = "ПТ";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(-590, -13);
+            label4.Name = "label4";
+            label4.Size = new Size(21, 15);
+            label4.TabIndex = 7;
+            label4.Text = "ВТ";
+            label4.Click += label4_Click;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(-336, -13);
+            label6.Name = "label6";
+            label6.Size = new Size(22, 15);
+            label6.TabIndex = 9;
+            label6.Text = "ЧТ";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(-464, -13);
+            label5.Name = "label5";
+            label5.Size = new Size(22, 15);
+            label5.TabIndex = 8;
+            label5.Text = "СР";
             // 
             // panel8
             // 
@@ -449,46 +531,69 @@
             // 
             // prevBtn
             // 
-            prevBtn.Location = new Point(84, 21);
+            prevBtn.Location = new Point(313, 464);
             prevBtn.Name = "prevBtn";
             prevBtn.Size = new Size(75, 23);
             prevBtn.TabIndex = 2;
-            prevBtn.Text = "prevBtn";
+            prevBtn.Text = "<<";
             prevBtn.UseVisualStyleBackColor = true;
             prevBtn.Click += prevBtn_Click;
             // 
             // nextBtn
             // 
-            nextBtn.Location = new Point(335, 21);
+            nextBtn.Location = new Point(547, 478);
             nextBtn.Name = "nextBtn";
             nextBtn.Size = new Size(75, 23);
             nextBtn.TabIndex = 3;
-            nextBtn.Text = "nextBtn";
+            nextBtn.Text = ">>";
             nextBtn.UseVisualStyleBackColor = true;
             nextBtn.Click += nextBtn_Click;
             // 
             // lblMonth
             // 
             lblMonth.AutoSize = true;
-            lblMonth.Location = new Point(216, 25);
+            lblMonth.Location = new Point(453, 464);
             lblMonth.Name = "lblMonth";
             lblMonth.Size = new Size(38, 15);
             lblMonth.TabIndex = 4;
             lblMonth.Text = "label2";
             // 
+            // headerPanel
+            // 
+            headerPanel.Controls.Add(label2);
+            headerPanel.Location = new Point(7, 493);
+            headerPanel.Name = "headerPanel";
+            headerPanel.Size = new Size(901, 60);
+            headerPanel.TabIndex = 5;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(40, 50);
+            label2.Name = "label2";
+            label2.Size = new Size(0, 15);
+            label2.TabIndex = 5;
+            // 
             // CalendarForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(941, 560);
+            ClientSize = new Size(929, 560);
+            Controls.Add(headerPanel);
             Controls.Add(lblMonth);
-            Controls.Add(nextBtn);
             Controls.Add(prevBtn);
             Controls.Add(calendarTable);
+            Controls.Add(nextBtn);
+            Controls.Add(label1);
             Name = "CalendarForm";
             Text = "CalendarForm";
             calendarTable.ResumeLayout(false);
+            panel7.ResumeLayout(false);
+            panel7.PerformLayout();
+            headerPanel.ResumeLayout(false);
+            headerPanel.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -540,5 +645,14 @@
         private Button prevBtn;
         private Button nextBtn;
         private Label lblMonth;
+        private Panel headerPanel;
+        private Label label3;
+        private Label label2;
+        private Label label4;
+        private Label label9;
+        private Label label8;
+        private Label label7;
+        private Label label6;
+        private Label label5;
     }
 }

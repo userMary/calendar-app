@@ -78,6 +78,8 @@
             txtPassword.Name = "txtPassword";
             txtPassword.Size = new Size(242, 23);
             txtPassword.TabIndex = 4;
+            txtPassword.UseSystemPasswordChar = true;
+            txtPassword.TextChanged += txtPassword_TextChanged;
             // 
             // txtName
             // 

@@ -21,14 +21,57 @@ namespace CalendarApp.Desktop.Forms
         private DateTime currentDate;
         private readonly int _userId;
 
-        public CalendarForm(ApiService apiService)
+        public CalendarForm(ApiService apiService, int userId)
         {
             InitializeComponent();
             api = apiService;
+            _userId = userId;
             currentDate = DateTime.Now;
 
+            InitHeaderPanel();
             InitCalendarTable();
             LoadCalendar(currentDate);
+        }
+
+        private void InitHeaderPanel()
+        {
+            // создаём панель сверху
+            headerPanel = new Panel
+            {
+                //Dock = DockStyle.Top,
+                Height = 100,
+                //BackColor = Color.LightGray
+            };
+            this.Controls.Add(headerPanel);
+            headerPanel.BringToFront();
+
+            // переносим lblMonth в панель
+            if (this.Controls.Contains(lblMonth))
+            {
+                this.Controls.Remove(lblMonth);
+                headerPanel.Controls.Add(lblMonth);
+                lblMonth.Location = new Point(120, 15);
+                lblMonth.AutoSize = true;
+            }
+
+            // переносим prevBtn
+            if (this.Controls.Contains(prevBtn))
+            {
+                this.Controls.Remove(prevBtn);
+                headerPanel.Controls.Add(prevBtn);
+                prevBtn.Location = new Point(10, 10);
+            }
+
+            // переносим nextBtn
+            if (this.Controls.Contains(nextBtn))
+            {
+                this.Controls.Remove(nextBtn);
+                headerPanel.Controls.Add(nextBtn);
+                nextBtn.Location = new Point(60, 10);
+            }
+
+            // календарь занимает оставшееся место
+            calendarTable.Dock = DockStyle.Fill;
         }
 
         private void InitCalendarTable()
@@ -379,6 +422,11 @@ namespace CalendarApp.Desktop.Forms
         {
             currentDate = currentDate.AddMonths(1);
             LoadCalendar(currentDate);
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
