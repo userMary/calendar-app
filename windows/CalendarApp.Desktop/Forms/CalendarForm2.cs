@@ -17,7 +17,7 @@ namespace CalendarApp.Desktop.Forms
         private readonly ApiService _api;
         private readonly int _userId;
         private DateTime _currentDate;
-        private List<NoteDto> _notes = new();
+        //private List<NoteDto> _notes = new();
 
         // Header
         private Panel headerPanel;
