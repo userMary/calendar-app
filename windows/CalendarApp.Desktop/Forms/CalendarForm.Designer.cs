@@ -485,12 +485,10 @@
             Controls.Add(nextBtn);
             Controls.Add(prevBtn);
             Controls.Add(calendarTable);
-            Controls.Add(label1);
             Name = "CalendarForm";
             Text = "CalendarForm";
             calendarTable.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
