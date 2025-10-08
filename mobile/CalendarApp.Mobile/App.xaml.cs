@@ -16,5 +16,23 @@ namespace CalendarApp.Mobile
             // Навигация на LoginPage с передачей ApiService
             MainPage = new NavigationPage(new Pages.LoginPage(ApiService));
         }
+        //protected override async void OnStart()
+        //{
+        //    if (AppState.CurrentUser != null)
+        //    {
+        //        try
+        //        {
+        //            var user = await ApiService.GetUserByIdAsync(AppState.CurrentUser.Id);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            AppState.CurrentUser = null;
+        //            await Shell.Current.DisplayAlert("Профиль удалён", "Ваш профиль был удалён администратором.", "ОК");
+        //            await Shell.Current.GoToAsync("//LoginPage");
+        //        }
+        //    }
+        //}
+
     }
+
 }

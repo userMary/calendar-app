@@ -10,13 +10,17 @@ namespace CalendarApp.Mobile.Views
         private readonly ApiService _apiService;
         private readonly Note _note;
 
+        private readonly Func<Task>? _onSavedOrDeleted;
+
         public bool IsExistingNote => _note.Id != 0;
 
-        public NoteModalPage(ApiService apiService, Note note)
+        public NoteModalPage(ApiService apiService, Note note, Func<Task>? onSavedOrDeleted = null)
         {
             InitializeComponent();
             _apiService = apiService;
             _note = note;
+
+            _onSavedOrDeleted = onSavedOrDeleted;
 
             BindingContext = this;
 
@@ -52,14 +56,40 @@ namespace CalendarApp.Mobile.Views
             _note.Date = DatePickerControl.Date;
             //_note.ImageUrl = ImageEntry.Text ?? "";
 
+            //if (_note.Id == 0)
+            //{
+            //    await _apiService.CreateNoteAsync(_note);
+            //}
+            //else
+            //{
+            //    await _apiService.UpdateNoteAsync(_note); // <- только один аргумент
+            //}
+
             if (_note.Id == 0)
             {
-                await _apiService.CreateNoteAsync(_note);
+                var (created, error) = await _apiService.CreateNoteAsync(_note);
+                if (created == null)
+                {
+                    await DisplayAlert("Ошибка", error ?? "Не удалось создать заметку", "OK");
+                    return;
+                }
             }
             else
             {
-                await _apiService.UpdateNoteAsync(_note); // <- только один аргумент
+                var (updated, error) = await _apiService.UpdateNoteAsync(_note);
+                if (updated == null)
+                {
+                    await DisplayAlert("Ошибка", error ?? "Не удалось обновить заметку", "OK");
+                    return;
+                }
             }
+
+            // ВАЖНО: вызов callback'а, чтобы CalendarPage обновил свои данные
+            if (_onSavedOrDeleted != null)
+                await _onSavedOrDeleted();
+
+
+
 
             await Navigation.PopModalAsync();
 
@@ -90,7 +120,19 @@ namespace CalendarApp.Mobile.Views
             bool confirm = await DisplayAlert("Удалить заметку?", "Вы уверены?", "Да", "Нет");
             if (!confirm) return;
 
-            await _apiService.DeleteNoteAsync(_note.Id);
+            //await _apiService.DeleteNoteAsync(_note.Id);
+
+            var success = await _apiService.DeleteNoteAsync(_note.Id);
+            if (!success)
+            {
+                await DisplayAlert("Ошибка", "Не удалось удалить заметку", "OK");
+                return;
+            }
+
+            if (_onSavedOrDeleted != null)
+                await _onSavedOrDeleted();
+
+
             await Navigation.PopModalAsync();
         }
 

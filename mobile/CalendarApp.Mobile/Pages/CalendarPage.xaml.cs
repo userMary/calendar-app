@@ -14,15 +14,42 @@ namespace CalendarApp.Mobile.Pages
         private readonly ApiService _apiService;
         private DateTime _currentMonth;
         private List<Note> _notes = new();
+
+        private DateTime _selectedDate; // выбранная дата
         private int _userId => AppState.CurrentUser!.Id; // Здесь подставь реальный userId после логина
+
+        private Button _selectedDayButton;
 
         public CalendarPage(ApiService apiService)
         {
             InitializeComponent();
             _apiService = apiService;
             _currentMonth = DateTime.Today;
+            _selectedDate = DateTime.Today;
+
+            // Загружаем заметки асинхронно
+            _ = LoadNotesAsync(); // fire-and-forget - метод вернёт Task
+
             LoadNotes();
             UpdateCalendar();
+        }
+
+        // Заменяем существующий LoadNotes на асинхронный Task
+        private async Task LoadNotesAsync()
+        {
+            try
+            {
+                _notes = await _apiService.GetNotesForUserAsync(_userId);
+                // после загрузки перерисовываем календарь для текущего месяца
+                UpdateCalendar(); // UpdateCalendar должен использовать _notes
+                                  // и показываем заметки для выбранной даты
+                UpdateNotesForSelectedDate(_selectedDate);
+            }
+            catch (Exception ex)
+            {
+                // логирование/ошибка
+                await DisplayAlert("Ошибка", "Не удалось загрузить заметки: " + ex.Message, "OK");
+            }
         }
 
         private async void LoadNotes()
@@ -74,8 +101,27 @@ namespace CalendarApp.Mobile.Pages
                     };
 
                     int capturedDay = dayCounter;
+                    //btn.Clicked += (s, e) =>
+                    //{
+                    //    UpdateNotesForSelectedDate(new DateTime(_currentMonth.Year, _currentMonth.Month, capturedDay));
+                    //};
                     btn.Clicked += (s, e) =>
                     {
+                        // Убираем выделение с предыдущей кнопки
+                        if (_selectedDayButton != null)
+                        {
+                            _selectedDayButton.BorderColor = Colors.Transparent;
+                            _selectedDayButton.BorderWidth = 0;
+                        }
+
+                        // Запоминаем новую выбранную кнопку
+                        _selectedDayButton = btn;
+
+                        // Добавляем рамку (можно заменить цвет)
+                        _selectedDayButton.BorderColor = Colors.DeepSkyBlue;
+                        _selectedDayButton.BorderWidth = 3;
+
+                        // Обновляем заметки
                         UpdateNotesForSelectedDate(new DateTime(_currentMonth.Year, _currentMonth.Month, capturedDay));
                     };
 
@@ -92,8 +138,25 @@ namespace CalendarApp.Mobile.Pages
 
         private void UpdateNotesForSelectedDate(DateTime date)
         {
+            _selectedDate = date;
+
             notesStack.Children.Clear();
+
             var notes = _notes.Where(n => n.Date.Date == date.Date).ToList();
+
+
+            if (!notes.Any())
+            {
+                notesStack.Children.Add(new Label
+                {
+                    Text = "Нет заметок на этот день",
+                    TextColor = Colors.Gray,
+                    HorizontalOptions = LayoutOptions.Center
+                });
+                return;
+            }
+
+
             foreach (var note in notes)
             {
                 var frame = new Frame
@@ -110,11 +173,17 @@ namespace CalendarApp.Mobile.Pages
                 };
 
                 var tapGesture = new TapGestureRecognizer();
+                //tapGesture.Tapped += async (s, e) =>
+                //{
+                //    var modal = new NoteModalPage(_apiService, note);
+                //    await Navigation.PushModalAsync(modal);
+                //    modal.Disappearing += (sender, args) => LoadNotes();
+                //};
+                // Открытие для редактирования (в UpdateNotesForSelectedDate при тапе по заметке)
                 tapGesture.Tapped += async (s, e) =>
                 {
-                    var modal = new NoteModalPage(_apiService, note);
+                    var modal = new NoteModalPage(_apiService, note, async () => await LoadNotesAsync());
                     await Navigation.PushModalAsync(modal);
-                    modal.Disappearing += (sender, args) => LoadNotes();
                 };
                 frame.GestureRecognizers.Add(tapGesture);
                 notesStack.Children.Add(frame);
@@ -135,13 +204,17 @@ namespace CalendarApp.Mobile.Pages
 
         private async void OnAddNoteClicked(object sender, EventArgs e)
         {
-            var modal = new NoteModalPage(_apiService, new Note { Date = DateTime.Today, UserId = _userId });
+            //var modal = new NoteModalPage(_apiService, new Note { Date = DateTime.Today, UserId = _userId });
+            //await Navigation.PushModalAsync(modal);
+            ////modal.Disappearing += (s, args) => LoadNotes();
+            //modal.Disappearing += (s, e) =>
+            //{
+            //    LoadNotes();
+            //};
+
+            var newNote = new Note { Date = _selectedDate, UserId = _userId };
+            var modal = new NoteModalPage(_apiService, newNote, async () => await LoadNotesAsync());
             await Navigation.PushModalAsync(modal);
-            //modal.Disappearing += (s, args) => LoadNotes();
-            modal.Disappearing += (s, e) =>
-            {
-                LoadNotes();
-            };
         }
 
     }
