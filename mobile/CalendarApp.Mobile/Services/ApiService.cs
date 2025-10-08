@@ -50,7 +50,9 @@ namespace CalendarApp.Mobile.Services
                 var payload = new LoginRequestDto
                 {
                     Email = email,
-                    PasswordHash = password // или Password, если API требует
+                    //было
+                    //PasswordHash = password // или Password, если API требует
+                    Password = password
                 };
 
                 // Ручная сериализация JSON

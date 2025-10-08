@@ -24,7 +24,7 @@ namespace CalendarApp.Mobile.Views
             TitleEntry.Text = _note.Title;
             DescriptionEditor.Text = _note.Description;
             DatePickerControl.Date = _note.Date;
-            ImageEntry.Text = _note.ImageUrl;
+            //ImageEntry.Text = _note.ImageUrl;
             PreviewImage.Source = _note.ImageUrl;
         }
 
@@ -50,7 +50,7 @@ namespace CalendarApp.Mobile.Views
             _note.Title = TitleEntry.Text ?? "";
             _note.Description = DescriptionEditor.Text ?? "";
             _note.Date = DatePickerControl.Date;
-            _note.ImageUrl = ImageEntry.Text ?? "";
+            //_note.ImageUrl = ImageEntry.Text ?? "";
 
             if (_note.Id == 0)
             {

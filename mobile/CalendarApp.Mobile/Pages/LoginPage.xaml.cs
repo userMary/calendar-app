@@ -58,4 +58,10 @@ public partial class LoginPage : ContentPage
     {
         await Navigation.PushAsync(new RegisterPage(_api));
     }
+
+    private void OnShowPasswordChanged(object sender, CheckedChangedEventArgs e)
+    {
+        passwordEntry.IsPassword = !e.Value;
+    }
+
 }

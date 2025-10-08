@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CalendarApp.Mobile.Views.NoteModalPage"
-             BackgroundColor="White"
+             BackgroundColor="DarkSlateGrey"
              Padding="20">
 
     <ScrollView>
@@ -19,16 +19,16 @@
 
             <Label Text="Цвет заметки" FontAttributes="Bold"/>
             <HorizontalStackLayout Spacing="10">
-                <Button BackgroundColor="White" Clicked="OnColorClicked"/>
-                <Button BackgroundColor="LightYellow" Clicked="OnColorClicked"/>
-                <Button BackgroundColor="LightGreen" Clicked="OnColorClicked"/>
+                <Button BackgroundColor="Orchid" Clicked="OnColorClicked"/>
+                <Button BackgroundColor="SaddleBrown" Clicked="OnColorClicked"/>
+                <Button BackgroundColor="DarkCyan" Clicked="OnColorClicked"/>
                 <Button BackgroundColor="LightCoral" Clicked="OnColorClicked"/>
-                <Button BackgroundColor="LightBlue" Clicked="OnColorClicked"/>
-                <Button BackgroundColor="Plum" Clicked="OnColorClicked"/>
+                <Button BackgroundColor="BlueViolet" Clicked="OnColorClicked"/>
+                <Button BackgroundColor="BurlyWood" Clicked="OnColorClicked"/>
             </HorizontalStackLayout>
 
-            <Label Text="Изображение (URL)" FontAttributes="Bold"/>
-            <Entry x:Name="ImageEntry" Placeholder="Введите URL изображения"/>
+            <!--<Label Text="Изображение (URL)" FontAttributes="Bold"/>-->
+            <!-- <Entry x:Name="ImageEntry" Placeholder="Введите URL изображения"/>-->
 
             <Image x:Name="PreviewImage" HeightRequest="150" Aspect="AspectFill"/>
 

@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CalendarApp.Mobile.Pages.LoginPage"
+             BackgroundColor="DarkSlateGrey"
              Title="Вход">
 
     <ScrollView>
@@ -16,10 +17,21 @@
                    Keyboard="Email"
                    Text="" />
 
-            <Entry x:Name="passwordEntry"
+            <!--<Entry x:Name="passwordEntry"
                    Placeholder="Пароль"
                    IsPassword="True"
-                   Text="" />
+                   Text="" />-->
+            <StackLayout>
+                <Entry x:Name="passwordEntry"
+           Placeholder="Пароль"
+           IsPassword="True"
+           Margin="0,10,0,0" />
+
+                <CheckBox x:Name="ShowPasswordCheckBox"
+              CheckedChanged="OnShowPasswordChanged"
+              VerticalOptions="Center" />
+                <Label Text="Показать пароль" VerticalOptions="Center" />
+            </StackLayout>
 
             <Label x:Name="messageLabel"
                    TextColor="Red"

@@ -99,7 +99,13 @@ namespace CalendarApp.Mobile.Pages
                 var frame = new Frame
                 {
                     BackgroundColor = Color.FromArgb(note.Color),
-                    Content = new Label { Text = note.Title },
+                    //Content = new Label { Text = note.Title },
+                    Content = new Label
+                    {
+                        Text = note.Title,
+                        TextColor = Colors.Black,
+                        FontAttributes = FontAttributes.Bold
+                    },
                     Padding = 10
                 };
 
@@ -131,7 +137,11 @@ namespace CalendarApp.Mobile.Pages
         {
             var modal = new NoteModalPage(_apiService, new Note { Date = DateTime.Today, UserId = _userId });
             await Navigation.PushModalAsync(modal);
-            modal.Disappearing += (s, args) => LoadNotes();
+            //modal.Disappearing += (s, args) => LoadNotes();
+            modal.Disappearing += (s, e) =>
+            {
+                LoadNotes();
+            };
         }
 
     }

@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CalendarApp.Mobile.Pages.CalendarPage"
+             BackgroundColor="DarkSlateGrey"
              Title="Календарь">
 
     <StackLayout Padding="10" Spacing="10">
@@ -24,7 +25,7 @@
             <Button Text="⟩" Grid.Column="2" Clicked="OnNextMonthClicked"/>
         </Grid>
 
-        <!-- Сетка дней недели -->
+        <!-- Сетка дней недели
         <Grid ColumnSpacing="5" RowSpacing="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -42,7 +43,33 @@
             <Label Text="Пт" HorizontalOptions="Center"/>
             <Label Text="Сб" HorizontalOptions="Center"/>
             <Label Text="Вс" HorizontalOptions="Center"/>
+        </Grid> -->
+        
+        
+        <!-- Сетка дней недели -->
+        <Grid x:Name="weekDaysGrid"
+      ColumnSpacing="5"
+      RowSpacing="0"
+      HorizontalOptions="FillAndExpand">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Пн" Grid.Column="0" HorizontalOptions="Center" FontAttributes="Bold" />
+            <Label Text="Вт" Grid.Column="1" HorizontalOptions="Center" FontAttributes="Bold" />
+            <Label Text="Ср" Grid.Column="2" HorizontalOptions="Center" FontAttributes="Bold" />
+            <Label Text="Чт" Grid.Column="3" HorizontalOptions="Center" FontAttributes="Bold" />
+            <Label Text="Пт" Grid.Column="4" HorizontalOptions="Center" FontAttributes="Bold" />
+            <Label Text="Сб" Grid.Column="5" HorizontalOptions="Center" FontAttributes="Bold" TextColor="darkBlue"/>
+            <Label Text="Вс" Grid.Column="6" HorizontalOptions="Center" FontAttributes="Bold" TextColor="Red"/>
         </Grid>
+
 
         <!-- Сетка чисел месяца -->
         <Grid x:Name="daysGrid" ColumnSpacing="5" RowSpacing="5">
