@@ -96,4 +96,10 @@ export class ApiService {
   // deleteUser(userId: number) {
   //   return this.http.delete(`${this.baseUrl}/Users/${userId}`);
   // }
+
+  // services/api.service.ts
+  isUserExists(userId: number) {
+    return this.http.get<boolean>(`/Users/${userId}/exists`);
+  }
+
 }

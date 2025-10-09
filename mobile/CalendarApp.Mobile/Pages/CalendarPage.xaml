@@ -4,6 +4,14 @@
              x:Class="CalendarApp.Mobile.Pages.CalendarPage"
              BackgroundColor="DarkSlateGrey"
              Title="Календарь">
+    
+    <!-- Кнопка "Выход" в шапке -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Выход"
+                     Order="Primary"
+                     Priority="0"
+                     Clicked="OnLogoutClicked"/>
+    </ContentPage.ToolbarItems>
 
     <StackLayout Padding="10" Spacing="10">
 

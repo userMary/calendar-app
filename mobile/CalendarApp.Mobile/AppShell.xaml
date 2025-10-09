@@ -3,13 +3,29 @@
     x:Class="CalendarApp.Mobile.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:CalendarApp.Mobile"
+    xmlns:pages="clr-namespace:CalendarApp.Mobile.Pages"
     Shell.FlyoutBehavior="Disabled"
-    Title="CalendarApp.Mobile">
+    Title="Календарь">
 
+    <!-- Страница входа -->
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Route="LoginPage"
+        ContentTemplate="{DataTemplate pages:LoginPage}" />
+
+    <!-- Страница регистрации -->
+    <ShellContent
+        Route="RegisterPage"
+        ContentTemplate="{DataTemplate pages:RegisterPage}" />
+
+    <!-- Страница календаря -->
+    <ShellContent
+        Route="CalendarPage"
+        ContentTemplate="{DataTemplate pages:CalendarPage}" />
+
+    <!-- Модальное окно для заметки -->
+    <ShellContent
+        Route="NoteModalPage"
+        ContentTemplate="{DataTemplate pages:NoteModalPage}" />
 
 </Shell>
+

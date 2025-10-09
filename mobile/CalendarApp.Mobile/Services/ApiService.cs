@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text;
 using System.Threading.Tasks;
 using CalendarApp.Mobile.Models;
+using System.Net;
 
 namespace CalendarApp.Mobile.Services
 {
@@ -20,38 +21,74 @@ namespace CalendarApp.Mobile.Services
         }
 
         // Login
+        //public async Task<(UserDto? user, string? error)> LoginAsync(string email, string password)
+        //{
+        //    //try
+        //    //{
+        //    //    var payload = new LoginRequestDto
+        //    //    {
+        //    //        Email = email,
+        //    //        PasswordHash = password // подстрой под API (или Password, если надо)
+        //    //    };
+
+        //    //    var res = await _http.PostAsJsonAsync("Users/login", payload);
+
+        //    //    if (!res.IsSuccessStatusCode)
+        //    //    {
+        //    //        var txt = await res.Content.ReadAsStringAsync();
+        //    //        return (null, txt);
+        //    //    }
+
+        //    //    var user = await res.Content.ReadFromJsonAsync<UserDto>();
+        //    //    return (user, null);
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    return (null, ex.Message);
+        //    //}
+        //    try
+        //    {
+        //        var payload = new LoginRequestDto
+        //        {
+        //            Email = email,
+        //            //было
+        //            //PasswordHash = password // или Password, если API требует
+        //            Password = password
+        //        };
+
+        //        // Ручная сериализация JSON
+        //        var json = JsonSerializer.Serialize(payload);
+        //        using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        //        var res = await _http.PostAsync("Users/login", content);
+
+        //        if (!res.IsSuccessStatusCode)
+        //        {
+        //            var txt = await res.Content.ReadAsStringAsync();
+        //            return (null, txt);
+        //        }
+
+        //        var userJson = await res.Content.ReadAsStringAsync();
+        //        var user = JsonSerializer.Deserialize<UserDto>(userJson, new JsonSerializerOptions
+        //        {
+        //            PropertyNameCaseInsensitive = true
+        //        });
+
+        //        return (user, null);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return (null, ex.Message);
+        //    }
+        //}
+
         public async Task<(UserDto? user, string? error)> LoginAsync(string email, string password)
         {
-            //try
-            //{
-            //    var payload = new LoginRequestDto
-            //    {
-            //        Email = email,
-            //        PasswordHash = password // подстрой под API (или Password, если надо)
-            //    };
-
-            //    var res = await _http.PostAsJsonAsync("Users/login", payload);
-
-            //    if (!res.IsSuccessStatusCode)
-            //    {
-            //        var txt = await res.Content.ReadAsStringAsync();
-            //        return (null, txt);
-            //    }
-
-            //    var user = await res.Content.ReadFromJsonAsync<UserDto>();
-            //    return (user, null);
-            //}
-            //catch (Exception ex)
-            //{
-            //    return (null, ex.Message);
-            //}
             try
             {
                 var payload = new LoginRequestDto
                 {
                     Email = email,
-                    //было
-                    //PasswordHash = password // или Password, если API требует
                     Password = password
                 };
 
@@ -60,6 +97,15 @@ namespace CalendarApp.Mobile.Services
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var res = await _http.PostAsync("Users/login", content);
+
+                // Проверка на удалённый или отсутствующий профиль
+                if (res.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    AppState.CurrentUser = null;
+                    await Shell.Current.DisplayAlert("Профиль не найден", "Пользователь был удалён администратором или не существует.", "ОК");
+                    await Shell.Current.GoToAsync("//LoginPage");
+                    return (null, "Пользователь не найден");
+                }
 
                 if (!res.IsSuccessStatusCode)
                 {
@@ -80,6 +126,7 @@ namespace CalendarApp.Mobile.Services
                 return (null, ex.Message);
             }
         }
+
 
         // Register
         public async Task<(UserDto? user, string? error)> RegisterAsync(string email, string password, string name)
@@ -111,11 +158,37 @@ namespace CalendarApp.Mobile.Services
         }
 
         // Получить заметки пользователя
+        //public async Task<List<Note>> GetNotesForUserAsync(int userId)
+        //{
+        //    try
+        //    {
+        //        var res = await _http.GetAsync($"Notes/user/{userId}");
+        //        res.EnsureSuccessStatusCode();
+        //        var lst = await res.Content.ReadFromJsonAsync<List<Note>>();
+        //        return lst ?? new List<Note>();
+        //    }
+        //    catch
+        //    {
+        //        return new List<Note>();
+        //    }
+        //}
+
+        // Получить заметки пользователя
         public async Task<List<Note>> GetNotesForUserAsync(int userId)
         {
             try
             {
                 var res = await _http.GetAsync($"Notes/user/{userId}");
+
+                // Если профиль удалён администратором (сервер вернул 404)
+                if (res.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    AppState.CurrentUser = null;
+                    await Shell.Current.DisplayAlert("Профиль удалён", "Ваш профиль был удалён администратором.", "ОК");
+                    await Shell.Current.GoToAsync("//LoginPage");
+                    return new List<Note>();
+                }
+
                 res.EnsureSuccessStatusCode();
                 var lst = await res.Content.ReadFromJsonAsync<List<Note>>();
                 return lst ?? new List<Note>();
@@ -210,6 +283,24 @@ namespace CalendarApp.Mobile.Services
             catch (Exception ex)
             {
                 return (null, ex.Message);
+            }
+        }
+
+        //метод проверки пользователя
+        public async Task<bool> IsUserExistsAsync(int userId)
+        {
+            try
+            {
+                var res = await _http.GetAsync($"Users/{userId}");
+                if (res.StatusCode == HttpStatusCode.NotFound)
+                    return false;
+
+                res.EnsureSuccessStatusCode();
+                return true;
+            }
+            catch
+            {
+                return false; // в случае ошибки тоже считаем, что пользователь недоступен
             }
         }
     }

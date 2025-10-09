@@ -3,7 +3,7 @@ using CalendarApp.Mobile.Services;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
-namespace CalendarApp.Mobile.Views
+namespace CalendarApp.Mobile.Pages
 {
     public partial class NoteModalPage : ContentPage
     {

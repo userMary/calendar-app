@@ -17,10 +17,6 @@
                    Keyboard="Email"
                    Text="" />
 
-            <!--<Entry x:Name="passwordEntry"
-                   Placeholder="Пароль"
-                   IsPassword="True"
-                   Text="" />-->
             <StackLayout>
                 <Entry x:Name="passwordEntry"
            Placeholder="Пароль"

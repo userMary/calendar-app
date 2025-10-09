@@ -179,7 +179,7 @@ namespace CalendarApp.Desktop.Forms
                 this.Hide();
                 var loginForm = new LoginForm(); // если у тебя она принимает api
                 loginForm.Show();
-                this.Close(); // закрываем текущий календарь
+                //this.Close(); // закрываем текущий календарь
                 return;
             }
 

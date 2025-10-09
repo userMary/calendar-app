@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { ApiService } from '../../services/api.service';
+import { Router } from '@angular/router';
 
 // import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -33,15 +34,16 @@ export class CalendarViewComponent implements OnInit {
   showYearView: boolean = false;
   userId: number = 0;
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private router: Router) {}
 
   ngOnInit(): void {
     const user = localStorage.getItem('user');
     if (user) {
       this.userId = JSON.parse(user).id;
       this.loadNotes();
+      this.checkUser(); // проверяем сразу при старте
     }
-    this.generateCalendar();
+    if (!this.userDeleted) this.generateCalendar();
   }
 
   // Генерация календаря (массив недель с днями)
@@ -168,6 +170,11 @@ export class CalendarViewComponent implements OnInit {
 
   // Переключение на предыдущий месяц
   prevMonth(): void {
+    if (this.userDeleted) return; // если удалён — ничего не делаем
+    this.checkUser(); // проверка перед обновлением календаря
+
+    if (this.userDeleted) return; // проверка могла установить флаг
+
     if (this.currentMonth === 0) {
       this.currentMonth = 11;
       this.currentYear--;
@@ -179,6 +186,11 @@ export class CalendarViewComponent implements OnInit {
 
   // Переключение на следующий месяц
   nextMonth(): void {
+    if (this.userDeleted) return;
+    this.checkUser(); // проверка перед обновлением календаря
+
+    if (this.userDeleted) return;
+
     if (this.currentMonth === 11) {
       this.currentMonth = 0;
       this.currentYear++;
@@ -219,6 +231,28 @@ export class CalendarViewComponent implements OnInit {
     ];
     return months[monthIndex];
   }
+
+
+  userDeleted: boolean = false;
+
+  checkUser(): void {
+  if (!this.userId || this.userDeleted) return;
+
+  this.api.isUserExists(this.userId).subscribe({
+    next: (exists) => {
+      if (!exists) {
+        this.userDeleted = true; // останавливаем дальнейшую работу
+        alert('Ваш профиль был удалён администратором.');
+        localStorage.removeItem('user'); // чистим сессию
+        this.router.navigate(['/login']);
+      }
+    },
+    error: (err) => {
+      console.error('Ошибка проверки пользователя', err);
+    }
+  });
+}
+  
 }
 
 

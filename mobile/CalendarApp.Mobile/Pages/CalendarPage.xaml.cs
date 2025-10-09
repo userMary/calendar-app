@@ -1,7 +1,7 @@
 // Pages/CalendarPage.xaml.cs
 using CalendarApp.Mobile.Models;
 using CalendarApp.Mobile.Services;
-using CalendarApp.Mobile.Views;
+//using CalendarApp.Mobile.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,26 +30,31 @@ namespace CalendarApp.Mobile.Pages
             // Загружаем заметки асинхронно
             _ = LoadNotesAsync(); // fire-and-forget - метод вернёт Task
 
-            LoadNotes();
-            UpdateCalendar();
+            //LoadNotes();
+            //UpdateCalendar();
         }
 
         // Заменяем существующий LoadNotes на асинхронный Task
         private async Task LoadNotesAsync()
         {
-            try
-            {
-                _notes = await _apiService.GetNotesForUserAsync(_userId);
-                // после загрузки перерисовываем календарь для текущего месяца
-                UpdateCalendar(); // UpdateCalendar должен использовать _notes
-                                  // и показываем заметки для выбранной даты
-                UpdateNotesForSelectedDate(_selectedDate);
-            }
-            catch (Exception ex)
-            {
-                // логирование/ошибка
-                await DisplayAlert("Ошибка", "Не удалось загрузить заметки: " + ex.Message, "OK");
-            }
+            if (!await CheckUserAsync()) return; // проверка пользователя при старте
+
+            _notes = await _apiService.GetNotesForUserAsync(_userId);
+            UpdateCalendar();
+            UpdateNotesForSelectedDate(_selectedDate);
+            //try
+            //{
+            //    _notes = await _apiService.GetNotesForUserAsync(_userId);
+            //    // после загрузки перерисовываем календарь для текущего месяца
+            //    UpdateCalendar(); // UpdateCalendar должен использовать _notes
+            //                      // и показываем заметки для выбранной даты
+            //    UpdateNotesForSelectedDate(_selectedDate);
+            //}
+            //catch (Exception ex)
+            //{
+            //    // логирование/ошибка
+            //    await DisplayAlert("Ошибка", "Не удалось загрузить заметки: " + ex.Message, "OK");
+            //}
         }
 
         private async void LoadNotes()
@@ -184,23 +189,13 @@ namespace CalendarApp.Mobile.Pages
                 {
                     var modal = new NoteModalPage(_apiService, note, async () => await LoadNotesAsync());
                     await Navigation.PushModalAsync(modal);
+                    //await Shell.Current.GoToAsync("//NoteModalPage");
                 };
                 frame.GestureRecognizers.Add(tapGesture);
                 notesStack.Children.Add(frame);
             }
         }
 
-        private void OnPrevMonthClicked(object sender, EventArgs e)
-        {
-            _currentMonth = _currentMonth.AddMonths(-1);
-            UpdateCalendar();
-        }
-
-        private void OnNextMonthClicked(object sender, EventArgs e)
-        {
-            _currentMonth = _currentMonth.AddMonths(1);
-            UpdateCalendar();
-        }
 
         private async void OnAddNoteClicked(object sender, EventArgs e)
         {
@@ -215,6 +210,54 @@ namespace CalendarApp.Mobile.Pages
             var newNote = new Note { Date = _selectedDate, UserId = _userId };
             var modal = new NoteModalPage(_apiService, newNote, async () => await LoadNotesAsync());
             await Navigation.PushModalAsync(modal);
+            //await Shell.Current.GoToAsync("//NoteModalPage");
+        }
+
+
+
+        private async void OnLogoutClicked(object sender, EventArgs e)
+        {
+            bool confirm = await DisplayAlert("Выход", "Вы уверены, что хотите выйти?", "Да", "Нет");
+            if (!confirm) return;
+
+            // Очистка текущего пользователя
+            AppState.CurrentUser = null;
+
+            // Переход на страницу входа
+            await Shell.Current.GoToAsync("//LoginPage");
+        }
+
+        // создаём асинхронную проверку перед обновлением календаря
+        private async Task<bool> CheckUserAsync()
+        {
+            if (AppState.CurrentUser == null) return false;
+
+            bool exists = await _apiService.IsUserExistsAsync(AppState.CurrentUser.Id);
+            if (!exists)
+            {
+                AppState.CurrentUser = null;
+                await DisplayAlert("Профиль удалён",
+                    "Ваш профиль был удалён администратором.", "OK");
+                await Shell.Current.GoToAsync("//LoginPage");
+                return false;
+            }
+            return true;
+        }
+
+        private async void OnPrevMonthClicked(object sender, EventArgs e)
+        {
+            if (!await CheckUserAsync()) return; // проверяем, существует ли пользователь
+
+            _currentMonth = _currentMonth.AddMonths(-1);
+            UpdateCalendar();
+        }
+
+        private async void OnNextMonthClicked(object sender, EventArgs e)
+        {
+            if (!await CheckUserAsync()) return; // проверяем, существует ли пользователь
+
+            _currentMonth = _currentMonth.AddMonths(1);
+            UpdateCalendar();
         }
 
     }

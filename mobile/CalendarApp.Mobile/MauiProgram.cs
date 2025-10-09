@@ -14,7 +14,7 @@ using CalendarApp.Mobile.Services;
 using System.Net.Http;
 using System;
 using CalendarApp.Mobile.Pages;
-using CalendarApp.Mobile.Views;
+//using CalendarApp.Mobile.Views;
 
 namespace CalendarApp.Mobile;
 

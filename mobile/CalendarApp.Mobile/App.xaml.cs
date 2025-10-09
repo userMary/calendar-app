@@ -5,7 +5,7 @@ namespace CalendarApp.Mobile
 {
     public partial class App : Application
     {
-        public ApiService ApiService { get; }
+        public ApiService ApiService { get; private set; }
         public App()
         {
             InitializeComponent();
@@ -14,7 +14,9 @@ namespace CalendarApp.Mobile
             ApiService = MauiProgram.Services.GetRequiredService<ApiService>();
 
             // Навигация на LoginPage с передачей ApiService
-            MainPage = new NavigationPage(new Pages.LoginPage(ApiService));
+            //MainPage = new NavigationPage(new Pages.LoginPage(ApiService));
+            // Важно: используем Shell!
+            MainPage = new AppShell();
         }
         //protected override async void OnStart()
         //{
